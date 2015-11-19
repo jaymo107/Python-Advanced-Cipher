@@ -7,8 +7,8 @@ class Cipher:
     __grid = [[]]
     __gridSize = 6
     __secretWord = ""
-    _rowLabels = ["A", "B", "C", "D", "E", "F"]
-    _colLabels = ["A", "B", "C", "D", "E", "F"]
+    _xLabels = ["A", "B", "C", "D", "E", "F"]
+    _yLabels = ["A", "B", "C", "D", "E", "F"]
 
     def setWord(self, word):
         self.__secretWord = word
