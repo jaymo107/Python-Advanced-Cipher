@@ -5,8 +5,10 @@ import sys
 class Cipher:
 
     __grid = [[]]
-    __gridSize = 8
+    __gridSize = 6
     __secretWord = ""
+    _rowLabels = ["A", "B", "C", "D", "E", "F"]
+    _colLabels = ["A", "B", "C", "D", "E", "F"]
 
     def setWord(self, word):
         self.__secretWord = word
@@ -50,6 +52,3 @@ class Cipher:
         self.__gridSize = size
         self.__secretWord = word
         self.generateGrid()
-
-cipher = Cipher(8, 'omg')
-cipher.printGrid()
