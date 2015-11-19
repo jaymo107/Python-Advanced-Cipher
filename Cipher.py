@@ -38,7 +38,9 @@ class Cipher:
             sys.stdout.write(self.__grid[x][0]+"\n")
 
             for y in range(len(self.__grid)):
-                sys.stdout.write(self.__grid[x][y])
+                col = xLabel[x]
+                row = yLabel[y]
+                sys.stdout.write(self.__grid[x][y]+" ["+col+row+"]")
 
     #Encode the inputted string using the encoder and print to the screen
     def encode():
