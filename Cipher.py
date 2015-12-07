@@ -31,17 +31,12 @@ class Cipher:
     def generateGrid(self):
 
         lower = self.randomizeGrid()
-        printed = ""
-
         for i in range(0, self.__gridSize):
             self.__lowerGrid.append(self.__lowerCharacters[lower[i]])
-            printed += self.__lowerGrid[i]
 
         upper = self.randomizeGrid()
-        printed = ""
         for i in range(0, self.__gridSize):
             self.__upperGrid.append(self.__upperCharacters[upper[i]])
-            printed += self.__upperGrid[i]
 
     """
     get letter at given x and y coordinates
