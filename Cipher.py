@@ -7,8 +7,8 @@ class Cipher:
     __rows = 6
     __gridSize = __cols * __rows
     __secretWord = None
-    __lowerCharacters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    __upperCharacters = "0123456789abcdefghijklmnopqrstuvwxyz"
+    __upperCharacters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    __lowerCharacters = "0123456789abcdefghijklmnopqrstuvwxyz"
     __sequence = []
     __xLabel = ["A", "B", "C", "D", "E", "F"]
     __yLabel = ["A", "B", "C", "D", "E", "F"]
@@ -26,9 +26,9 @@ class Cipher:
         return random.sample(range(0, self.__gridSize), self.__gridSize)
 
     """
-    Generate a grid to a given size and give it random characters
+    Generate the grids (upper case and lower case) to a given size and give them random characters
     """
-    def generateGrid(self):
+    def generateGrids(self):
 
         lower = self.randomizeGrid()
         for i in range(0, self.__gridSize):
@@ -53,14 +53,18 @@ class Cipher:
     Encode the inputted string using the encoder and print to the screen
     """
     def encode(self, string):
-        string = string.upper()
         encoded = ""
+
         for i in range(0, len(string)):
+
             if string[i] == " ":
                 encoded += " "
                 continue
 
-            index = self.__lowerGrid.index(string[i])
+            if string[i].islower():
+                index = self.__lowerGrid.index(string[i])
+            else:
+                index = self.__upperGrid.index(string[i])
 
             encoded += self.__xLabel[self.getX(index)]+self.__xLabel[self.getY(index)]+" "
         return encoded
@@ -82,4 +86,4 @@ class Cipher:
 
     def __init__(self):
         self.__secretWord = "lol"
-        self.generateGrid()
+        self.generateGrids()
