@@ -6,7 +6,8 @@ class Cipher:
     __rows = 6
     __gridSize = __cols * __rows
     __secretWord = None
-    __characters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    __lowerCharacters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    __upperCharacters = "0123456789abcdefghijklmnopqrstuvwxyz"
     __sequence = []
     __xLabel = ["A", "B", "C", "D", "E", "F"]
     __yLabel = ["A", "B", "C", "D", "E", "F"]
@@ -31,7 +32,7 @@ class Cipher:
         characters = self.randomizeGrid()
         printed = ""
         for i in range(0, self.__gridSize):
-            self.__grid.append(self.__characters[characters[i]])
+            self.__grid.append(self.__lowerCharacters[characters[i]])
             printed += self.__grid[i]
 
     """
