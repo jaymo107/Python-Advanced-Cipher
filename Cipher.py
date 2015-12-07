@@ -1,12 +1,13 @@
 import random
-import string
-import sys
 
 class Cipher:
-
-    __grid = [[]]
-    __gridSize = 6
-    __secretWord = ""
+    __grid = []
+    __cols = 6
+    __rows = 6
+    __gridSize = __cols * __rows
+    __secretWord = None
+    __characters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    __sequence = []
     __xLabel = ["A", "B", "C", "D", "E", "F"]
     __yLabel = ["A", "B", "C", "D", "E", "F"]
 
@@ -14,43 +15,67 @@ class Cipher:
         self.__secretWord = word
 
     def getWord(self):
-        return __secretWord
+        return self.__secretWord
 
-    def setGridSize(self, size):
-        self.__gridSize = size
+    """
+    Generate a random character that hasn't appeared before already
+    """
+    def randomizeGrid(self):
+        return random.sample(range(0, self.__gridSize), self.__gridSize)
 
-    def getGridSize(self):
-        return __gridSize
-
-    def randomChar(self):
-        return chr(random.randrange(97, 97 + 26))
-
+    """
+    Generate a grid to a given size and give it random characters
+    """
     def generateGrid(self):
-        self.__grid = [[0 for i in xrange(self.__gridSize -1)] for i in xrange(self.__gridSize-1)]
 
-        for x in range(len(self.__grid)):
-            for y in range(len(self.__grid[x])):
-                self.__grid[x][y] = self.randomChar()
+        characters = self.randomizeGrid()
+        printed = ""
+        for i in range(0, self.__gridSize):
+            self.__grid.append(self.__characters[characters[i]])
+            printed += self.__grid[i]
 
-    #format and print the grid to the user
+    """
+    get letter at given x and y coordinates
+    """
+    def getLetterAt(self, x, y):
+        return self.__grid[x + self.__cols*y]
+
+    def getX(self, i):
+        return i % self.__cols
+
+    def getY(self, i):
+        return i / self.__rows
+    """
+    Encode the inputted string using the encoder and print to the screen
+    """
+    def encode(self, string):
+        string = string.upper()
+        encoded = ""
+        for i in range(0, len(string)):
+            if string[i] == " ":
+                encoded += " "
+                continue
+
+            index = self.__grid.index(string[i])
+
+            encoded += self.__xLabel[self.getX(index)]+self.__xLabel[self.getY(index)]+" "
+        return encoded
+
+    """
+    format and print the grid to the user
+    """
     def printGrid(self):
-        for x in range(len(self.__grid) -1):
-            # sys.stdout.write(self.__grid[x][0]+"\n")
+        for i in range(0, self.__gridSize):
+            x = self.getX(i)
+            y = self.getY(i)
+            print "%i. %s at location (%s, %s) is encoded to [%s]" % (i, self.__grid[i], x, y, self.encode(self.getLetterAt(x,y)))
 
-            for y in range(len(self.__grid) -1):
-                col = self.__xLabel[x]
-                row = self.__yLabel[y]
-                sys.stdout.write(self.__grid[x][y]+", ["+col+row+"]\n")
-
-    #Encode the inputted string using the encoder and print to the screen
-    def encode():
+    """
+    decode the string back to the original string
+    """
+    def decode(self):
         pass
 
-    #decode the string back to the original string
-    def decode():
-        pass
-
-    def __init__(self, size, word):
-        self.__gridSize = size
-        self.__secretWord = word
+    def __init__(self):
+        self.__secretWord = "lol"
         self.generateGrid()
