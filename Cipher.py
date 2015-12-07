@@ -1,7 +1,8 @@
 import random
 
 class Cipher:
-    __grid = []
+    __lowerGrid = []
+    __upperGrid = []
     __cols = 6
     __rows = 6
     __gridSize = __cols * __rows
@@ -29,17 +30,24 @@ class Cipher:
     """
     def generateGrid(self):
 
-        characters = self.randomizeGrid()
+        lower = self.randomizeGrid()
+        printed = ""
+
+        for i in range(0, self.__gridSize):
+            self.__lowerGrid.append(self.__lowerCharacters[lower[i]])
+            printed += self.__lowerGrid[i]
+
+        upper = self.randomizeGrid()
         printed = ""
         for i in range(0, self.__gridSize):
-            self.__grid.append(self.__lowerCharacters[characters[i]])
-            printed += self.__grid[i]
+            self.__upperGrid.append(self.__upperCharacters[upper[i]])
+            printed += self.__upperGrid[i]
 
     """
     get letter at given x and y coordinates
     """
     def getLetterAt(self, x, y):
-        return self.__grid[x + self.__cols*y]
+        return self.__lowerGrid[x + self.__cols * y]
 
     def getX(self, i):
         return i % self.__cols
@@ -57,7 +65,7 @@ class Cipher:
                 encoded += " "
                 continue
 
-            index = self.__grid.index(string[i])
+            index = self.__lowerGrid.index(string[i])
 
             encoded += self.__xLabel[self.getX(index)]+self.__xLabel[self.getY(index)]+" "
         return encoded
@@ -69,7 +77,7 @@ class Cipher:
         for i in range(0, self.__gridSize):
             x = self.getX(i)
             y = self.getY(i)
-            print "%i. %s at location (%s, %s) is encoded to [%s]" % (i, self.__grid[i], x, y, self.encode(self.getLetterAt(x,y)))
+            print "%i. %s at location (%s, %s) is encoded to [%s]" % (i, self.__lowerGrid[i], x, y, self.encode(self.getLetterAt(x, y)))
 
     """
     decode the string back to the original string
