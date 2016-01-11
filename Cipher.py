@@ -1,20 +1,27 @@
 import random
+import re
 
 class Cipher:
     __lowerGrid = []
     __upperGrid = []
+    __finalGrid = []
     __cols = 6
     __rows = 6
     __gridSize = __cols * __rows
-    __secretWord = None
+    __secretWord = ""
     __upperCharacters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     __lowerCharacters = "0123456789abcdefghijklmnopqrstuvwxyz"
     __sequence = []
-    __xLabel = ["A", "B", "C", "D", "E", "F"]
-    __yLabel = ["A", "B", "C", "D", "E", "F"]
+    __lowerXlabel = ["A", "B", "C", "D", "E", "F"]
+    __lowerYlabel = ["A", "B", "C", "D", "E", "F"]
+    __encodedWord = None
 
-    def setWord(self, word):
-        self.__secretWord = word
+    def setWord(self):
+        self.__secretWord = ""
+        while len(self.__secretWord) <= 0:
+            print "Set a secret word: "
+            self.__secretWord = raw_input("\n")
+        print "Secret word set successfully"
 
     def getWord(self):
         return self.__secretWord
@@ -55,6 +62,12 @@ class Cipher:
     def encode(self, string):
         encoded = ""
 
+        """
+        remove non alphanumeric characters
+        """
+        pattern = re.compile('([^\s\w]|_)+')
+        string = re.sub(pattern, '', string)
+
         for i in range(0, len(string)):
 
             if string[i] == " ":
@@ -66,7 +79,10 @@ class Cipher:
             else:
                 index = self.__upperGrid.index(string[i])
 
-            encoded += self.__xLabel[self.getX(index)]+self.__xLabel[self.getY(index)]+" "
+            encoded += self.__lowerXlabel[self.getX(index)] + self.__lowerXlabel[self.getY(index)] + " "
+
+        self.__encodedWord = encoded
+        self.setWord()
         return encoded
 
     """
@@ -81,9 +97,29 @@ class Cipher:
     """
     decode the string back to the original string
     """
-    def decode(self):
-        pass
+    def decode(self, string):
+        decoded = ""
+
+        if self.getWord() is None:
+            return "You need to set a secret word"
+
+        """
+        split the string into the coded letter combinations
+        """
+        codes = string.split(' ')
+
+        for i in range(0, len(codes)):
+            if codes[i] == " ":
+                decoded += " "
+                continue
+            try:
+                xPos = self.__lowerXlabel.index(codes[i][0])
+                yPos = self.__lowerYlabel.index(codes[i][1])
+                decoded += self.getLetterAt(xPos, yPos)
+            except IndexError:
+                decoded += " "
+
+        return decoded
 
     def __init__(self):
-        self.__secretWord = "lol"
         self.generateGrids()
