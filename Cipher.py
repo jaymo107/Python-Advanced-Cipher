@@ -15,12 +15,14 @@ class Cipher:
     __lowerXlabel = ["A", "B", "C", "D", "E", "F"]
     __lowerYlabel = ["A", "B", "C", "D", "E", "F"]
     __encodedWord = None
+    __originalString = None
 
     def setWord(self):
         self.__secretWord = ""
-        while len(self.__secretWord) <= 0:
-            print "Set a secret word: "
+        while len(self.__secretWord) <= 0 or len(self.__originalString) % len(self.__secretWord) != 0:
+            print "Set a secret word divisible by the original string: "
             self.__secretWord = raw_input("\n")
+
         print "Secret word set successfully"
 
     def getWord(self):
@@ -61,6 +63,8 @@ class Cipher:
     """
     def encode(self, string):
         encoded = ""
+
+        self.__originalString = string
 
         """
         remove non alphanumeric characters
