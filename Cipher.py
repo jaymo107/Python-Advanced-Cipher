@@ -17,13 +17,13 @@ class Cipher:
     __encodedWord = None
     __originalString = None
 
-    def setWord(self):
-        self.__secretWord = ""
-        while len(self.__secretWord) <= 0 or len(self.__originalString) % len(self.__secretWord) != 0:
-            print "Set a secret word divisible by the original string: "
-            self.__secretWord = raw_input("\n")
-
-        print "Secret word set successfully"
+    def setWord(self, word):
+        if len(self.__originalString) % len(word) != 0:
+            print "Word must be divisible by original string: "
+            word = raw_input("\n")
+            self.setWord(word)
+        self.__secretWord = word
+        return "Secret word set"
 
     def getWord(self):
         return self.__secretWord
@@ -37,21 +37,29 @@ class Cipher:
     """
     Generate the grids (upper case and lower case) to a given size and give them random characters
     """
-    def generateGrids(self):
+    def generateGrids(self, keyword=None):
 
-        lower = self.randomizeGrid()
-        for i in range(0, self.__gridSize):
-            self.__lowerGrid.append(self.__lowerCharacters[lower[i]])
+        if keyword:
+            xSize = len(keyword)
+            ySize = len(self.__originalString) / len(keyword)
+            print "new grid should be %d wide and %d tall" % (xSize, ySize)
+        else:
+            lower = self.randomizeGrid()
+            for i in range(0, self.__gridSize):
+                self.__lowerGrid.append(self.__lowerCharacters[lower[i]])
 
-        upper = self.randomizeGrid()
-        for i in range(0, self.__gridSize):
-            self.__upperGrid.append(self.__upperCharacters[upper[i]])
+            upper = self.randomizeGrid()
+            for i in range(0, self.__gridSize):
+                self.__upperGrid.append(self.__upperCharacters[upper[i]])
 
     """
     get letter at given x and y coordinates
     """
-    def getLetterAt(self, x, y):
-        return self.__lowerGrid[x + self.__cols * y]
+    def getLetterAt(self, x, y, grid="lower"):
+        if grid == "lower":
+            return self.__lowerGrid[x + self.__cols * y]
+        elif grid == "upper":
+            return self.__upperGrid[x + self.__cols * y]
 
     def getX(self, i):
         return i % self.__cols
@@ -64,18 +72,18 @@ class Cipher:
     def encode(self, string):
         encoded = ""
 
-        self.__originalString = string
-
         """
         remove non alphanumeric characters
         """
-        pattern = re.compile('([^\s\w]|_)+')
+        pattern = re.compile(r'\W+')
         string = re.sub(pattern, '', string)
+
+        self.__originalString = string
 
         for i in range(0, len(string)):
 
             if string[i] == " ":
-                encoded += " "
+                encoded += ""
                 continue
 
             if string[i].islower():
@@ -86,17 +94,35 @@ class Cipher:
             encoded += self.__lowerXlabel[self.getX(index)] + self.__lowerXlabel[self.getY(index)] + " "
 
         self.__encodedWord = encoded
-        self.setWord()
-        return encoded
+        return self.__encodedWord
 
     """
     format and print the grid to the user
     """
     def printGrid(self):
-        for i in range(0, self.__gridSize):
+        lowerPrinter = "Lowercase Grid: \n\t"
+
+        for i in range(0, len(self.__lowerGrid)):
             x = self.getX(i)
             y = self.getY(i)
-            print "%i. %s at location (%s, %s) is encoded to [%s]" % (i, self.__lowerGrid[i], x, y, self.encode(self.getLetterAt(x, y)))
+
+            if x < self.__cols - 1:
+                lowerPrinter += self.encode(self.getLetterAt(x, y, "lower"))
+            else:
+                lowerPrinter += "\n\t"
+
+        upperPrinter = "Uppercase Grid: \n\t"
+
+        for i in range(0, len(self.__upperGrid)):
+            x = self.getX(i)
+            y = self.getY(i)
+
+            if x < self.__cols - 1:
+                upperPrinter += self.encode(self.getLetterAt(x, y, "upper"))
+            else:
+                upperPrinter += "\n\t"
+
+        print lowerPrinter + "\n\n" + upperPrinter
 
     """
     decode the string back to the original string
@@ -104,7 +130,7 @@ class Cipher:
     def decode(self, string):
         decoded = ""
 
-        if self.getWord() is None:
+        if len(self.getWord()) <= 0:
             return "You need to set a secret word"
 
         """
@@ -114,7 +140,7 @@ class Cipher:
 
         for i in range(0, len(codes)):
             if codes[i] == " ":
-                decoded += " "
+                decoded += ""
                 continue
             try:
                 xPos = self.__lowerXlabel.index(codes[i][0])
