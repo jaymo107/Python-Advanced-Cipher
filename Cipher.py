@@ -10,21 +10,31 @@ class Cipher:
     __gridSize = __cols * __rows
     __secretWord = ""
     __upperCharacters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    __lowerCharacters = "0123456789abcdefghijklmnopqrstuvwxyz"
+    __lowerCharacters = __upperCharacters.lower()
     __sequence = []
     __lowerXlabel = ["A", "B", "C", "D", "E", "F"]
     __lowerYlabel = ["A", "B", "C", "D", "E", "F"]
     __encodedWord = None
     __originalString = None
 
+    """
+    Set the secret word in the application
+    """
     def setWord(self, word):
         if len(self.__originalString) % len(word) != 0:
             print "Word must be divisible by original string: "
             word = raw_input("\n")
+            """
+            Call this function recursively
+            """
             self.setWord(word)
         self.__secretWord = word
+        self.generateGrids(word)
         return "Secret word set"
 
+    """
+    Return the secret word
+    """
     def getWord(self):
         return self.__secretWord
 
@@ -40,9 +50,11 @@ class Cipher:
     def generateGrids(self, keyword=None):
 
         if keyword:
-            xSize = len(keyword)
-            ySize = len(self.__originalString) / len(keyword)
-            print "new grid should be %d wide and %d tall" % (xSize, ySize)
+            codes = self.__encodedWord.split(' ')
+
+            for i in range(0, len(codes)):
+                self.__finalGrid.append(codes[i])
+
         else:
             lower = self.randomizeGrid()
             for i in range(0, self.__gridSize):
@@ -60,12 +72,21 @@ class Cipher:
             return self.__lowerGrid[x + self.__cols * y]
         elif grid == "upper":
             return self.__upperGrid[x + self.__cols * y]
+        elif grid == "final":
+            return self.__finalGrid[x + len(self.getWord()) * y]
 
-    def getX(self, i):
+    """
+    Return the X value based ona row/column structure
+    """
+    def getX(self, i, grid = None):
         return i % self.__cols
 
-    def getY(self, i):
+    """
+    Return the Y value based ona row/column structure
+    """
+    def getY(self, i, grid = None):
         return i / self.__rows
+
     """
     Encode the inputted string using the encoder and print to the screen
     """
@@ -122,7 +143,14 @@ class Cipher:
             else:
                 upperPrinter += "\n\t"
 
-        print lowerPrinter + "\n\n" + upperPrinter
+        final = "Secret Grid: \n\t"
+        counter = 0
+
+        for i in range(0, len(self.__finalGrid)):
+            final += self.__finalGrid[i]+" "
+
+
+        print lowerPrinter + "\n\n" + upperPrinter + "\n\n" + final
 
     """
     decode the string back to the original string
